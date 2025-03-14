@@ -35,3 +35,60 @@ colnames(df) <- c("Mean", "Variance")
 head(df)
 stopCluster(cl)
 ```
+
+## Question 2
+
+```{r}
+#| echo: false
+data(galaxies)
+dat <- galaxies
+
+B <- 10000 
+b <- 1000
+
+# --- SERIAL BOOTSTRAP ---
+serial.s <- Sys.time()
+serial.r <- replicate(B, median(sample(dat, replace = TRUE)))
+serial.t <- Sys.time() - serial.s
+cat("Serial Processing Time:", serial.t)
+
+# --- PARALLEL BOOTSTRAP ---
+cl <- makeCluster(detectCores() - 1)
+registerDoParallel(cl)
+parallel.s2 <- Sys.time()
+
+parallel.r2 <- foreach(i = 1:B, .combine = c) %dopar% {
+  resample <- sample(dat, replace = TRUE)
+  median(resample)
+}
+
+parallel.e2 <- Sys.time()
+parallel.t2 <- parallel.e2 - parallel.s2
+cat("Paralle Processing Time", parallel.t2)
+```
+
+Serial processing time is much faster than the parallel processing time, it suggests that the overhead from parallel processing is not worth it, given the relatively small amount of work in each iteration.
+
+```{r}
+#| echo: false
+# --- Parallel Bootstrap (With 1000 Samples per batch) ---
+
+nb <- B/b
+parallel.s3 <- Sys.time()
+parallel.r3 <- foreach(i=1:nb, .combine = c) %dopar%{
+  # Create 1000 bootstrap samples at once
+  batch.medians <- replicate(b, {
+    resample <- sample(dat, replace=TRUE)
+    median(resample)
+  })
+  # Return the batch of medians
+  batch.medians
+}
+
+parallel.e3 <- Sys.time()
+stopCluster(cl)
+parallel.t3 <- parallel.e3 - parallel.s3
+
+performance <- data.frame(Method = c("Serial Processing", "Parallel Processing (1 sample per iteration", "Parallel Processing (1000 samples per batch"), Time = c(serial.t, parallel.t2, parallel.t3))
+kable(performance, caption="Performance Comparison Between Serial and Parallel Processing")
+```
