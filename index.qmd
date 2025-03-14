@@ -1,0 +1,7 @@
+---
+title: "Assignment 2"
+---
+
+This is html file of assignment 2 consist with Parallel Computing Practical from question 1 to question 5.
+
+
