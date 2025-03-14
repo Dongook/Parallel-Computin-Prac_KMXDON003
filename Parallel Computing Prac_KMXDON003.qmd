@@ -1,5 +1,5 @@
 ---
-title: "Parallel Computin Practical (KMXDON003)"
+title: "Parallel Computing Practical (KMXDON003)"
 ---
 
 ```{r}
@@ -13,4 +13,25 @@ library(knitr)
 library(MASS)
 library(boot)
 library(parallel)
+```
+
+## Question 1
+
+```{r}
+#| echo: false
+cl <- makeCluster(detectCores() - 1)
+registerDoParallel(cl)
+n <- 100
+
+run <- foreach(i = 1:n, .combine = rbind) %dopar% {
+  sample.data <- rexp(100, rate = 1)
+  sample.mean <- mean(sample.data)
+  sample.var <- var(sample.data)
+  c(sample.mean, sample.var)
+}
+
+df <- as.data.frame(run)
+colnames(df) <- c("Mean", "Variance")
+head(df)
+stopCluster(cl)
 ```
