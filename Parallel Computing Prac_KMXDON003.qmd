@@ -1,0 +1,16 @@
+---
+title: "Parallel Computin Practical (KMXDON003)"
+---
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(iterators)
+library(foreach)
+library(doParallel)
+library(knitr)
+library(MASS)
+library(boot)
+library(parallel)
+```
