@@ -92,3 +92,31 @@ parallel.t3 <- parallel.e3 - parallel.s3
 performance <- data.frame(Method = c("Serial Processing", "Parallel Processing (1 sample per iteration", "Parallel Processing (1000 samples per batch"), Time = c(serial.t, parallel.t2, parallel.t3))
 kable(performance, caption="Performance Comparison Between Serial and Parallel Processing")
 ```
+
+## Question 3
+
+```{r}
+#| echo: false
+med <- function(x,y){
+  return(median(x[y]))
+}
+
+set.seed(1000)
+n <- 50
+B <- 500
+
+truemed <- log(2) # True median
+count <- 0 
+
+for (i in 1:500) {
+  sample <- rexp(n, rate=1)
+  boots <- boot(sample, statistic = med, R=B)
+  ci <- boot.ci(boots, type="perc")
+  if (!is.null(ci) && truemed >= ci[1] && truemed <= ci[2]) {
+    count <- count + 1
+  }
+}
+
+coverage.probability <- count/500
+cat("Estimate of coverage", coverage.probability)
+```
