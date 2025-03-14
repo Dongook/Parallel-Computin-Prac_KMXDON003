@@ -120,3 +120,22 @@ for (i in 1:500) {
 coverage.probability <- count/500
 cat("Estimate of coverage", coverage.probability)
 ```
+
+## Question 4
+
+```{r}
+#| echo: false
+set.seed(1234)
+
+cl <- makeCluster(detectCores() - 1)
+registerDoParallel(cl)
+
+max.val <- foreach(i = 1:3, .combine = c, .packages = "iterators") %dopar% {
+  vec <- rnorm(5)
+  max(vec)
+}
+
+stopCluster(cl)
+
+print(max.val)
+```
