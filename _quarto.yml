@@ -1,5 +1,24 @@
 project:
-  title: "Parallel Computin Prac_KMXDON003"
+  type: book
+  output-dir: _site
+book:
+  title: First peer-reviewed hand-in
+  sidebar:
+    border: true
+    background: light
+    position: right
+  navbar:
+    search: true
+    background: light
+  chapters:
+  - index.qmd
+  - Parallel Computing Prac_KMXDON003.qmd
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    toc-location: left
 
 
 
