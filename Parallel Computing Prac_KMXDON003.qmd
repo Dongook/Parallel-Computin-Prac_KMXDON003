@@ -139,3 +139,44 @@ stopCluster(cl)
 
 print(max.val)
 ```
+
+## Question 5
+
+```{r}
+#| echo: false
+cl <- makeCluster(detectCores() - 1)
+registerDoParallel(cl)
+
+nv <- 1000
+vec.size <- 1000
+
+set.seed(1234)
+rand.list <- lapply(1:nv, function(x) rnorm(vec.size))
+
+# parLapply()
+s1 <- Sys.time()
+r1 <- parLapply(cl, rand.list, max)
+e1 <- Sys.time()
+t1 <- e1 - s1
+
+# foreach()
+s2 <- Sys.time()
+r2 <- foreach(vec = rand.list, .combine = c) %dopar% {
+  max(vec)
+}
+
+e2 <- Sys.time()
+t2 <- e2 - s2
+
+# replicate()
+s3 <- Sys.time()
+r3 <- replicate(nv, max(rnorm(vec.size)))
+e3 <- Sys.time()
+t3 <- e3 - s3
+
+stopCluster(cl)
+
+# Results
+result <- data.frame(Method = c("parLapply", "foreach", "replicate"), RunTime = c(t1, t2, t3))
+kable(result, caption = "Comparing run time difference")
+```
